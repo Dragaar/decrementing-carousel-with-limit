@@ -1,11 +1,12 @@
 package com.epam.rd.autotasks;
 
-public class CarouselRun {
-    DecrementingCarousel dec;
-    protected int runnerIndex = 0;
-    CarouselRun(DecrementingCarousel dec)
-    {
-        this.dec = dec;
+public class CarouselWithLimitedRun extends CarouselRun {
+
+    private int actionLimit; //обмеження на кільксть ранів
+
+    public CarouselWithLimitedRun(DecrementingCarousel dec, final int actionLimit) {
+        super(dec);
+        this.actionLimit = actionLimit;
     }
     public int next() {
         int passesNumber = 0;
@@ -21,20 +22,27 @@ public class CarouselRun {
 
         } while (listElement == 0);
 
+        if(actionLimit<=0) return -1;
+        actionLimit--;
 
         dec.carosel[runnerIndex-1] -= 1;
         //System.out.println("Current = " + listElement + " Current changed - " + dec.carosel[runnerIndex-1]);
         return listElement;
     }
 
-
-    public boolean isFinished() {
-        int passesNumber = 0;
+    private int elementsCount()
+    {
+        int counter = 0;
         for(int i = 0; i < dec.carosel.length; i++)
         {
-            if(dec.carosel[i] == 0) passesNumber++;
+            if(dec.carosel[i] > 0) counter++;
         }
-        if(passesNumber == dec.carosel.length) return true;
+        return counter;
+    }
+    public boolean isFinished() {
+
+        if(elementsCount() == 0 || actionLimit<=0) return true;
         else return false;
     }
+
 }
